@@ -40,7 +40,7 @@ public class BlackHoleService extends VpnService {
         // Process command
         //vpnStart();
 
-        Toast.makeText(this, "Service Running1123", Toast.LENGTH_SHORT).show();
+        //Toast.makeText(this, "Service Running1123", Toast.LENGTH_SHORT).show();
 
         switch (cmd) {
             case start:

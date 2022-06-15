@@ -27,7 +27,7 @@ public class Receiver extends BroadcastReceiver{
         Util.logExtras(TAG, intent);
 
         // Start service
-        Toast.makeText(context, "Service Running", Toast.LENGTH_SHORT).show();
+        //Toast.makeText(context, "Service Running", Toast.LENGTH_SHORT).show();
 
         if(Intent.ACTION_BOOT_COMPLETED.equals(intent.getAction())){
 
