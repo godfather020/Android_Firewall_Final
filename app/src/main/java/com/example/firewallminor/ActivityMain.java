@@ -135,8 +135,8 @@ public class ActivityMain extends AppCompatActivity implements SharedPreferences
         Log.i(TAG, "Destroy");
         //running = false;
         //PreferenceManager.getDefaultSharedPreferences(this).unregisterOnSharedPreferenceChangeListener(this);
-        //unregisterReceiver(connectivityChangedReceiver);
-       // unregisterReceiver(packageChangedReceiver);
+        unregisterReceiver(connectivityChangedReceiver);
+        unregisterReceiver(packageChangedReceiver);
         //BlackHoleService.stop(this);
 
         BlackHoleService.start(this);

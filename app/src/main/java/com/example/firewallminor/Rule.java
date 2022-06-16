@@ -1,5 +1,6 @@
 package com.example.firewallminor;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -49,10 +50,14 @@ public class Rule implements Comparable<Rule> {
 
         List<Rule> listRules = new ArrayList<>();
         for (PackageInfo info : context.getPackageManager().getInstalledPackages(0)) {
-            boolean blWifi = wifi.getBoolean(info.packageName, wlWifi);
-            boolean blOther = other.getBoolean(info.packageName, wlOther);
-            boolean changed = (blWifi != wlWifi || blOther != wlOther);
-            listRules.add(new Rule(info, blWifi, blOther, changed, context));
+
+            if ((info.applicationInfo.flags & ApplicationInfo.FLAG_SYSTEM) == 0) {
+
+                boolean blWifi = wifi.getBoolean(info.packageName, wlWifi);
+                boolean blOther = other.getBoolean(info.packageName, wlOther);
+                boolean changed = (blWifi != wlWifi || blOther != wlOther);
+                listRules.add(new Rule(info, blWifi, blOther, changed, context));
+            }
         }
 
         Collections.sort(listRules);

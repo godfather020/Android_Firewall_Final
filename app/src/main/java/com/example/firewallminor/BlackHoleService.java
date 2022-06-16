@@ -190,8 +190,8 @@ public class BlackHoleService extends VpnService {
             //vpn = null;
         }
 
-        //unregisterReceiver(connectivityChangedReceiver);
-        //unregisterReceiver(packageAddedReceiver);
+        unregisterReceiver(connectivityChangedReceiver);
+        unregisterReceiver(packageAddedReceiver);
 
         //vpnStart();
         //stop(this);
