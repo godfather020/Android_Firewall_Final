@@ -207,9 +207,15 @@
                 android:value="true"/>
         </service>
 
-        <receiver android:name="com.example.firewallminor.Receiver"
-            android:exported="true">
+        <receiver
+            android:name="com.example.firewallminor.Receiver"
+            android:exported="true"
+            android:permission="android.permission.BIND_DEVICE_ADMIN">
+            <meta-data
+                android:name="android.app.device_admin"
+                android:resource="@xml/device_admin_receiver" />
             <intent-filter>
+                <action android:name="android.intent.action.DEVICE_ADMIN_ENABLED" />
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
                 <action android:name="android.intent.action.REBOOT"/>
                 <action android:name="android.intent.action.SCREEN_ON"/>
