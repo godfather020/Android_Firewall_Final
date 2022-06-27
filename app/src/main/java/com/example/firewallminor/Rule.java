@@ -9,6 +9,7 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.graphics.drawable.Drawable;
 import android.preference.PreferenceManager;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -45,19 +46,67 @@ public class Rule implements Comparable<Rule> {
         SharedPreferences wifi = context.getSharedPreferences("wifi", Context.MODE_PRIVATE);
         SharedPreferences other = context.getSharedPreferences("other", Context.MODE_PRIVATE);
 
-        boolean wlWifi = prefs.getBoolean("whitelist_wifi", true);
-        boolean wlOther = prefs.getBoolean("whitelist_other", true);
+        boolean wlWifi = prefs.getBoolean("whitelist_wifi", false);
+        boolean wlOther = prefs.getBoolean("whitelist_other", false);
 
+        String[] pac = context.getResources().getStringArray(R.array.PackageNames);
         List<Rule> listRules = new ArrayList<>();
         for (PackageInfo info : context.getPackageManager().getInstalledPackages(0)) {
 
-            if ((info.applicationInfo.flags & ApplicationInfo.FLAG_SYSTEM) == 0) {
+            boolean blWifi = false;
+            boolean blOther = false;
+            boolean changed = false;
+            listRules.add(new Rule(info, blWifi, blOther, changed, context));
 
-                boolean blWifi = wifi.getBoolean(info.packageName, wlWifi);
-                boolean blOther = other.getBoolean(info.packageName, wlOther);
+            for (int i = 0; i < listRules.size(); i++) {
+
+                for (String s : pac) {
+
+                    if (listRules.get(i).info.packageName.equals(s)) {
+
+                        listRules.add(new Rule(listRules.get(i).info, true, true, false, context));
+                        listRules.remove(i);
+                        Log.d("index", String.valueOf(listRules.size()));
+
+                        //listRules.set(info.packageName, new Rule(info, blWifi, blOther, changed, context));
+                    }
+                }
+            }
+
+            /*if ((info.applicationInfo.flags & ApplicationInfo.FLAG_SYSTEM) == 0) {
+
+                boolean blWifi = wifi.getBoolean(info.packageName, true);
+                boolean blOther = other.getBoolean(info.packageName, true);
                 boolean changed = (blWifi != wlWifi || blOther != wlOther);
                 listRules.add(new Rule(info, blWifi, blOther, changed, context));
+            }*/
+            /*else {
+
+                boolean blWifi = wifi.getBoolean(info.packageName, false);
+                boolean blOther = other.getBoolean(info.packageName, false);
+                boolean changed = (blWifi != wlWifi || blOther != wlOther);
+                listRules.add(new Rule(info, blWifi, blOther, changed, context));
+            }*/
+            /*if ((info.applicationInfo.flags & ApplicationInfo.FLAG_SYSTEM) == 0){
+
+                boolean blWifi =  true;
+                boolean blOther = true;
+                boolean changed = false;
+                listRules.add(new Rule(info, blWifi, blOther, changed, context));
             }
+            else {
+
+                for (String s : pac) {
+
+                    if (info.packageName.equals(s)) {
+
+                        boolean blWifi = false;
+                        boolean blOther = false;
+                        boolean changed = false;
+                        listRules.add(new Rule(info, blWifi, blOther, changed, context));
+                    }
+                }
+            }*/
         }
 
         Collections.sort(listRules);

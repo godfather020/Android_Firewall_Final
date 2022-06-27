@@ -7,6 +7,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.content.pm.PackageInfo;
 import android.net.ConnectivityManager;
 import android.net.VpnService;
 import android.os.AsyncTask;
@@ -38,6 +39,7 @@ public class ActivityMain extends AppCompatActivity implements SharedPreferences
     public SwitchCompat swEnabled;
     public int restart = 0;
     public SharedPreferences prefs1;
+    SharedPreferences prefs;
 
     private static final int REQUEST_VPN = 1;
 
@@ -45,7 +47,7 @@ public class ActivityMain extends AppCompatActivity implements SharedPreferences
     protected void onCreate(Bundle savedInstanceState) {
         Log.i(TAG, "Create");
 
-        final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        prefs = PreferenceManager.getDefaultSharedPreferences(this);
         setTheme(prefs.getBoolean("dark_theme", false) ? R.style.AppThemeDark : R.style.AppTheme);
 
         prefs1 = PreferenceManager.getDefaultSharedPreferences(this);
@@ -75,6 +77,21 @@ public class ActivityMain extends AppCompatActivity implements SharedPreferences
                 swEnabled.setChecked(true);
             }
         });
+
+        String[] pac = this.getResources().getStringArray(R.array.PackageNames);
+
+        for (PackageInfo info : this.getPackageManager().getInstalledPackages(0)) {
+
+            for (String s : pac) {
+
+                if (info.packageName.equals(s)) {
+
+
+                }
+            }
+
+        }
+
 
         //swEnabled.setEnabled(false);
         swEnabled.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -128,6 +145,7 @@ public class ActivityMain extends AppCompatActivity implements SharedPreferences
 
             this.finish();
         }
+        //onDestroy();
     }
 
     @Override
@@ -139,7 +157,10 @@ public class ActivityMain extends AppCompatActivity implements SharedPreferences
         unregisterReceiver(packageChangedReceiver);
         //BlackHoleService.stop(this);
 
-        BlackHoleService.start(this);
+        //BlackHoleService.start(this);
+        /*prefs.edit().putBoolean("whitelist_wifi", !prefs.getBoolean("whitelist_wifi", true)).apply();
+        fillApplicationList();*/
+        BlackHoleService.reload("wifi", this);
 
         getSharedPreferences("reboot", MODE_PRIVATE).edit().putInt("reboot", 0).apply();
 
@@ -248,10 +269,10 @@ public class ActivityMain extends AppCompatActivity implements SharedPreferences
         network.setIcon(Util.isWifiActive(this) ? R.drawable.ic_network_wifi_white_24dp : R.drawable.ic_network_cell_white_24dp);
 
         MenuItem wifi = menu.findItem(R.id.menu_whitelist_wifi);
-        wifi.setChecked(prefs.getBoolean("whitelist_wifi", true));
+        wifi.setChecked(prefs.getBoolean("whitelist_wifi", false));
 
         MenuItem other = menu.findItem(R.id.menu_whitelist_other);
-        other.setChecked(prefs.getBoolean("whitelist_other", true));
+        other.setChecked(prefs.getBoolean("whitelist_other", false));
 
         MenuItem dark = menu.findItem(R.id.menu_dark);
         dark.setChecked(prefs.getBoolean("dark_theme", false));
@@ -354,7 +375,11 @@ public class ActivityMain extends AppCompatActivity implements SharedPreferences
 
             // Start service
             if (resultCode == RESULT_OK)
-                BlackHoleService.start(this);
+                //BlackHoleService.start(this);
+                prefs.edit().putBoolean("whitelist_other", !prefs.getBoolean("whitelist_other", true)).apply();
+                prefs.edit().putBoolean("whitelist_wifi", !prefs.getBoolean("whitelist_wifi", true)).apply();
+                fillApplicationList();
+                BlackHoleService.reload("wifi", this);
         } else
             super.onActivityResult(requestCode, resultCode, data);
     }

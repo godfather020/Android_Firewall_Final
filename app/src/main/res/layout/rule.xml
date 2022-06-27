@@ -43,7 +43,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
         android:layout_marginStart="12dp"
-        android:visibility="gone"
+        android:visibility="visible"
         android:button="@drawable/wifi" />
 
     <CheckBox
@@ -52,6 +52,6 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
         android:layout_marginStart="12dp"
-        android:visibility="gone"
+        android:visibility="visible"
         android:button="@drawable/other" />
 </LinearLayout>

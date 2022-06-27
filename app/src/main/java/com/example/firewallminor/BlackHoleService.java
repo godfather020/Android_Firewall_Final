@@ -205,13 +205,13 @@ public class BlackHoleService extends VpnService {
         Log.i(TAG, "Revoke");
 
         if (vpn != null) {
-            vpnStop(vpn);
-            vpn = null;
+            //vpnStop(vpn);
+           // vpn = null;
         }
 
         // Disable firewall
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-        prefs.edit().putBoolean("enabled", false).apply();
+        //SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        //prefs.edit().putBoolean("enabled", false).apply();
 
         super.onRevoke();
     }
